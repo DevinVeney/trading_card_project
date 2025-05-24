@@ -22,5 +22,5 @@ urlpatterns = [
     path('cards/', include('cards.urls')),
     path('admin/', admin.site.urls),
     path('accounts/', include('django.contrib.auth.urls')),
-    path('', lambda request: redirect('card_gallery')),  # Redirect root to card gallery
+    path('', lambda request: redirect('homepage')),  # Redirect root to my homepage
 ]

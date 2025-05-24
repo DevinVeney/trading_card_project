@@ -9,6 +9,7 @@ from django_htmx.http import HttpResponseClientRedirect
 @login_required
 def card_gallery(request):
     cards = Card.objects.all()
+    print(cards)
     return render(request, 'cards/card_list.html', {'cards': cards})
 
 @login_required
@@ -24,3 +25,6 @@ def open_pack(request):
         collection.cards.add(card)
 
     return render(request, 'cards/open_pack.html', {'new_cards': new_cards})
+def homepage(request):
+    # Will point to my homepage template
+    return render(request, 'cards/homepage.html')
