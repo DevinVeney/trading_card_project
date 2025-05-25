@@ -4,49 +4,348 @@
   <meta charset="UTF-8" />
   <meta name="csrf-token" content="{{ csrf_token }}">
   <title>{% block title %}Trading Card Collection{% endblock %}</title>
+  
+  <!-- Google Fonts for Enhanced Typography -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Rajdhani:wght@300;400;600&display=swap" rel="stylesheet">
+  
+  <!-- Font Awesome for Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  
+  <!-- Bootstrap CSS -->
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
+  
+  <!-- AOS (Animate On Scroll) CSS -->
+  <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+  
+  <!-- Custom Vault Theme CSS -->
+  {% load static %}
+  <link rel="stylesheet" href="{% static 'cards/css/vault-theme.css' %}">
+  
+  <!-- Custom CSS Variables for Theme -->
+  <style>
+    :root {
+      /* Cyber Vault Color Palette */
+      --vault-dark: #0a0a0f;
+      --vault-darker: #050508;
+      --vault-card-bg: #1a1a2e;
+      --vault-surface: #16213e;
+      
+      /* Neon Accents */
+      --neon-blue: #00d4ff;
+      --neon-purple: #8b5cf6;
+      --neon-green: #00ff88;
+      --gold-rare: #ffd700;
+      --silver-uncommon: #c0c0c0;
+      
+      /* Typography */
+      --font-heading: 'Orbitron', monospace;
+      --font-body: 'Rajdhani', sans-serif;
+      
+      /* Gradients */
+      --card-gradient: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+      --rare-gradient: linear-gradient(135deg, #ffd700 0%, #ff8c00 100%);
+      --epic-gradient: linear-gradient(135deg, #8b5cf6 0%, #3b82f6 100%);
+    }
+    
+    /* Base Dark Theme with Particle Background */
+    body {
+      background: var(--vault-dark);
+      color: #ffffff;
+      font-family: var(--font-body);
+      position: relative;
+      overflow-x: hidden;
+    }
+    
+    /* Particle Background Container */
+    #particles-js {
+      position: fixed;
+      width: 100%;
+      height: 100%;
+      top: 0;
+      left: 0;
+      z-index: -1;
+      background: linear-gradient(135deg, var(--vault-dark) 0%, var(--vault-darker) 100%);
+    }
+    
+    /* Enhanced Navbar with Glass Effect */
+    .navbar-dark {
+      background: rgba(22, 33, 62, 0.8) !important;
+      backdrop-filter: blur(15px);
+      border-bottom: 1px solid var(--neon-blue);
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+      position: relative;
+      z-index: 1000;
+    }
+    
+    .navbar-brand {
+      font-family: var(--font-heading);
+      font-weight: 700;
+      color: var(--neon-blue) !important;
+      text-shadow: 0 0 10px rgba(0, 212, 255, 0.5);
+      animation: pulse-glow 3s ease-in-out infinite;
+    }
+    
+    @keyframes pulse-glow {
+      0%, 100% { text-shadow: 0 0 10px rgba(0, 212, 255, 0.5); }
+      50% { text-shadow: 0 0 20px rgba(0, 212, 255, 0.8), 0 0 30px rgba(0, 212, 255, 0.3); }
+    }
+    
+    /* Content Container with Glass Effect */
+    .container {
+      position: relative;
+      z-index: 1;
+    }
+  </style>
+  
+  <!-- HTMX -->
   <script src="https://unpkg.com/htmx.org@1.9.2"></script>
+  
+  <!-- Alpine.js -->
   <script src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js" defer></script>
+  
+  <!-- AOS (Animate On Scroll) JS -->
+  <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+  
+  <!-- Particles.js -->
+  <script src="https://cdn.jsdelivr.net/npm/particles.js@2.0.0/particles.min.js"></script>
+  
+  <!-- Configure HTMX to include CSRF token -->
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      // Initialize AOS
+      AOS.init({
+        duration: 800,
+        easing: 'ease-out-cubic',
+        once: true,
+        offset: 100
+      });
+      
+      // Initialize Particles.js
+      particlesJS('particles-js', {
+        "particles": {
+          "number": {
+            "value": 80,
+            "density": {
+              "enable": true,
+              "value_area": 800
+            }
+          },
+          "color": {
+            "value": ["#00d4ff", "#8b5cf6", "#00ff88"]
+          },
+          "shape": {
+            "type": "circle",
+            "stroke": {
+              "width": 0,
+              "color": "#000000"
+            }
+          },
+          "opacity": {
+            "value": 0.3,
+            "random": true,
+            "anim": {
+              "enable": true,
+              "speed": 1,
+              "opacity_min": 0.1,
+              "sync": false
+            }
+          },
+          "size": {
+            "value": 3,
+            "random": true,
+            "anim": {
+              "enable": true,
+              "speed": 2,
+              "size_min": 0.1,
+              "sync": false
+            }
+          },
+          "line_linked": {
+            "enable": true,
+            "distance": 150,
+            "color": "#00d4ff",
+            "opacity": 0.2,
+            "width": 1
+          },
+          "move": {
+            "enable": true,
+            "speed": 1,
+            "direction": "none",
+            "random": false,
+            "straight": false,
+            "out_mode": "out",
+            "bounce": false,
+            "attract": {
+              "enable": false,
+              "rotateX": 600,
+              "rotateY": 1200
+            }
+          }
+        },
+        "interactivity": {
+          "detect_on": "canvas",
+          "events": {
+            "onhover": {
+              "enable": true,
+              "mode": "repulse"
+            },
+            "onclick": {
+              "enable": true,
+              "mode": "push"
+            },
+            "resize": true
+          },
+          "modes": {
+            "grab": {
+              "distance": 400,
+              "line_linked": {
+                "opacity": 1
+              }
+            },
+            "bubble": {
+              "distance": 400,
+              "size": 40,
+              "duration": 2,
+              "opacity": 8,
+              "speed": 3
+            },
+            "repulse": {
+              "distance": 100,
+              "duration": 0.4
+            },
+            "push": {
+              "particles_nb": 4
+            },
+            "remove": {
+              "particles_nb": 2
+            }
+          }
+        },
+        "retina_detect": true
+      });
+      
+      // Configure HTMX to include CSRF token
+      document.body.addEventListener('htmx:configRequest', function(evt) {
+        evt.detail.headers['X-CSRFToken'] = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
+      });
+    });
+  </script>
 </head>
 <body>
-  <nav class="navbar navbar-expand-lg navbar-dark bg-primary mb-4">
+  <!-- Particle Background -->
+  <div id="particles-js"></div>
+  
+  <nav class="navbar navbar-expand-lg navbar-dark mb-4">
     <div class="container-fluid">
-      <a class="navbar-brand" href="{% url 'homepage' %}">Trading Card Collection</a>
+      <a class="navbar-brand" href="{% url 'homepage' %}">
+        <i class="fas fa-gem me-2"></i>Trading Card Vault
+      </a>
       <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
         <span class="navbar-toggler-icon"></span>
       </button>
       <div class="collapse navbar-collapse" id="navbarSupportedContent">
         <ul class="navbar-nav me-auto mb-2 mb-lg-0">
           <li class="nav-item">
-            <a class="nav-link active" aria-current="page" href="{% url 'homepage' %}">Home</a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link" href="{% url 'card_gallery' %}">Collection</a>
-          </li>
-          <li class="nav-item dropdown">
-            <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-              Packs
+            <a class="nav-link active" aria-current="page" href="{% url 'homepage' %}">
+              <i class="fas fa-home me-1"></i>Home
             </a>
-            <ul class="dropdown-menu">
-              <li><a class="dropdown-item" href="{% url 'open_pack' %}">Open Pack</a></li>
-              <li><a class="dropdown-item" href="#">Pack History</a></li>
-              <li><hr class="dropdown-divider"></li>
-              <li><a class="dropdown-item" href="#">Shop</a></li>
-            </ul>
           </li>
           <li class="nav-item">
-            <a class="nav-link" href="/accounts/logout/">Logout</a>
+            <a class="nav-link" href="{% url 'card_gallery' %}">
+              <i class="fas fa-layer-group me-1"></i>Collection
+            </a>
           </li>
         </ul>
+        
+        <!-- Enhanced Search Form with HTMX -->
         <form class="d-flex" role="search">
-          <input class="form-control me-2" type="search" placeholder="Search cards..." aria-label="Search"/>
-          <button class="btn btn-outline-light" type="submit">Search</button>
+          <div class="input-group">
+            <input class="form-control" 
+                   type="search" 
+                   placeholder="Search vault..." 
+                   aria-label="Search"
+                   name="q"
+                   hx-get="{% url 'search_cards' %}"
+                   hx-target="#card-grid"
+                   hx-trigger="keyup changed delay:300ms"
+                   hx-indicator="#navbar-search-indicator"
+                   style="background: rgba(26, 26, 46, 0.8); border-color: var(--neon-blue); color: white; backdrop-filter: blur(10px);">
+            <span class="input-group-text" id="navbar-search-indicator" style="display: none; background: rgba(26, 26, 46, 0.8); border-color: var(--neon-blue); backdrop-filter: blur(10px);">
+              <div class="spinner-border spinner-border-sm text-light" role="status">
+                <span class="visually-hidden">Searching...</span>
+              </div>
+            </span>
+            <button class="btn btn-outline-light" type="button" onclick="clearNavbarSearch()">
+              <i class="fas fa-times"></i>
+            </button>
+          </div>
         </form>
       </div>
     </div>
   </nav>
+  
+  <!-- Search Results Info (Global) -->
   <div class="container">
+    <div id="search-info" class="mb-3"></div>
     {% block content %}{% endblock %}
   </div>
+
+  <!-- Global Search JavaScript -->
+  <script>
+    // Navbar search functionality
+    document.addEventListener('htmx:afterRequest', function(evt) {
+      if (evt.detail.target && evt.detail.target.id === 'card-grid') {
+        const cardCount = evt.detail.target.children.length;
+        const searchInfo = document.getElementById('search-info');
+        const searchInput = document.querySelector('input[name="q"]');
+        
+        if (searchInput && searchInput.value.trim()) {
+          searchInfo.innerHTML = `
+            <div class="alert alert-primary d-flex justify-content-between align-items-center" style="background: rgba(22, 33, 62, 0.8); border-color: var(--neon-blue); backdrop-filter: blur(10px);">
+              <span><i class="fas fa-search"></i> Found ${cardCount} card(s) matching "${searchInput.value}"</span>
+              <button class="btn btn-sm btn-outline-primary" onclick="clearNavbarSearch()">
+                <i class="fas fa-times"></i> Clear Search
+              </button>
+            </div>
+          `;
+        } else {
+          searchInfo.innerHTML = '';
+        }
+      }
+    });
+    
+    function clearNavbarSearch() {
+      const searchInput = document.querySelector('input[name="q"]');
+      if (searchInput) {
+        searchInput.value = '';
+        searchInput.dispatchEvent(new Event('keyup'));
+      }
+      const searchInfo = document.getElementById('search-info');
+      if (searchInfo) {
+        searchInfo.innerHTML = '';
+      }
+    }
+    
+    // Auto-focus search when on card gallery page
+    document.addEventListener('DOMContentLoaded', function() {
+      if (window.location.pathname.includes('/cards/')) {
+        const searchInput = document.querySelector('input[name="q"]');
+        if (searchInput) {
+          // Add keyboard shortcut (Ctrl+K or Cmd+K)
+          document.addEventListener('keydown', function(e) {
+            if ((e.ctrlKey || e.metaKey) && e.key === 'k') {
+              e.preventDefault();
+              searchInput.focus();
+            }
+          });
+        }
+      }
+    });
+  </script>
+  
+  <!-- Bootstrap JS -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>
