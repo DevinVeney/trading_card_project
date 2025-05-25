@@ -1,30 +1,48 @@
-from django.shortcuts import render
-
-# Create your views here.
 from django.shortcuts import render, get_object_or_404
 from .models import Card, UserCollection
 from django.contrib.auth.decorators import login_required
-from django_htmx.http import HttpResponseClientRedirect
+from django.db.models import Q
 
 @login_required
 def card_gallery(request):
     cards = Card.objects.all()
-    print(cards)
     return render(request, 'cards/card_list.html', {'cards': cards})
 
 @login_required
-def open_pack(request):
-    # Simulate opening a pack with 5 random cards
-    import random
-    cards = list(Card.objects.all())
-    new_cards = random.sample(cards, 5)
+def search_cards(request):
+    query = request.GET.get('q', '').strip()
+    
+    if query:
+        # Search in card name, description, and rarity
+        cards = Card.objects.filter(
+            Q(name__icontains=query) |
+            Q(description__icontains=query) |
+            Q(rarity__icontains=query)
+        ).distinct()
+    else:
+        # If no query, return all cards
+        cards = Card.objects.all()
+    
+    # Return only the card grid partial template for HTMX
+    return render(request, 'cards/partials/card_grid.html', {'cards': cards})
 
-    # Add cards to user's collection
-    collection, _ = UserCollection.objects.get_or_create(user=request.user)
-    for card in new_cards:
-        collection.cards.add(card)
-
-    return render(request, 'cards/open_pack.html', {'new_cards': new_cards})
 def homepage(request):
     # Will point to my homepage template
     return render(request, 'cards/homepage.html')
+
+@login_required
+def card_detail(request, card_id):
+    card = get_object_or_404(Card, id=card_id)
+    
+    # Get user's collection to check if they own this card
+    try:
+        collection = UserCollection.objects.get(user=request.user)
+        user_owns_card = collection.cards.filter(id=card_id).exists()
+    except UserCollection.DoesNotExist:
+        user_owns_card = False
+    
+    context = {
+        'card': card,
+        'user_owns_card': user_owns_card,
+    }
+    return render(request, 'cards/card_detail.html', context)
