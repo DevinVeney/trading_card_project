@@ -1,0 +1,66 @@
+{% extends 'cards/base.html' %}
+{% block title %}{{ card.name }} - Card Details{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <!-- Breadcrumb Navigation -->
+    <nav aria-label="breadcrumb">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="{% url 'homepage' %}">Home</a></li>
+            <li class="breadcrumb-item"><a href="{% url 'card_gallery' %}">Cards</a></li>
+            <li class="breadcrumb-item active">{{ card.name }}</li>
+        </ol>
+    </nav>
+
+    <div class="row">
+        <!-- Card Image -->
+        <div class="col-md-6">
+            <div class="card">
+                {% load static %}
+                <img src="{% static 'cards/images/' %}{{ card.image }}" 
+                     class="card-img-top" 
+                     alt="{{ card.name }}"
+                     style="max-height: 500px; object-fit: contain;">
+            </div>
+        </div>
+
+        <!-- Card Information -->
+        <div class="col-md-6">
+            <h1>{{ card.name }}</h1>
+            
+            <!-- Rarity Badge -->
+            <span class="badge bg-{% if card.rarity == 'legendary' %}warning{% elif card.rarity == 'epic' %}purple{% elif card.rarity == 'rare' %}primary{% elif card.rarity == 'uncommon' %}success{% else %}secondary{% endif %} mb-3">
+                {{ card.rarity|title }}
+            </span>
+
+            <!-- Ownership Status -->
+            {% if user_owns_card %}
+                <div class="alert alert-success">
+                    <i class="fas fa-check-circle"></i> You own this card!
+                </div>
+            {% else %}
+                <div class="alert alert-info">
+                    <i class="fas fa-info-circle"></i> You don't own this card yet.
+                </div>
+            {% endif %}
+
+            <!-- Card Description -->
+            <div class="card mt-3">
+                <div class="card-header">
+                    <h5>Description</h5>
+                </div>
+                <div class="card-body">
+                    <p>{{ card.description }}</p>
+                </div>
+            </div>
+
+            <!-- Action Buttons -->
+            <div class="mt-4">
+                <a href="{% url 'card_gallery' %}" class="btn btn-secondary">
+                    <i class="fas fa-arrow-left"></i> Back to Gallery
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
