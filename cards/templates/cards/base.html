@@ -11,36 +11,40 @@
 <body>
   <nav class="navbar navbar-expand-lg navbar-dark bg-primary mb-4">
     <div class="container-fluid">
-      <a class="navbar-brand" href="{% url 'homepage' %}">Trading Card Collection</a>
+      <a class="navbar-brand" href="{% url 'card_gallery' %}">Trading Card Collection</a>
       <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
         <span class="navbar-toggler-icon"></span>
       </button>
       <div class="collapse navbar-collapse" id="navbarSupportedContent">
         <ul class="navbar-nav me-auto mb-2 mb-lg-0">
           <li class="nav-item">
-            <a class="nav-link active" aria-current="page" href="{% url 'homepage' %}">Home</a>
+            <a class="nav-link active" aria-current="page" href="{% url 'card_gallery' %}">Home</a>
           </li>
-          <li class="nav-item">
-            <a class="nav-link" href="{% url 'card_gallery' %}">Collection</a>
-          </li>
-          <li class="nav-item dropdown">
-            <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-              Packs
-            </a>
-            <ul class="dropdown-menu">
-              <li><a class="dropdown-item" href="{% url 'open_pack' %}">Open Pack</a></li>
-              <li><a class="dropdown-item" href="#">Pack History</a></li>
-              <li><hr class="dropdown-divider"></li>
-              <li><a class="dropdown-item" href="#">Shop</a></li>
-            </ul>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link" href="/accounts/logout/">Logout</a>
-          </li>
+          
+          
+          
         </ul>
         <form class="d-flex" role="search">
-          <input class="form-control me-2" type="search" placeholder="Search cards..." aria-label="Search"/>
-          <button class="btn btn-outline-light" type="submit">Search</button>
+          <div class="input-group">
+            <input class="form-control" 
+                   type="search" 
+                   placeholder="Search vault..." 
+                   aria-label="Search"
+                   name="q"
+                   hx-get="{% url 'search_cards' %}"
+                   hx-target="#card-grid"
+                   hx-trigger="keyup changed delay:300ms"
+                   hx-indicator="#navbar-search-indicator"
+                   style="background: rgba(26, 26, 46, 0.8); border-color: var(--neon-blue); color: white; backdrop-filter: blur(10px);">
+            <span class="input-group-text" id="navbar-search-indicator" style="display: none; background: rgba(26, 26, 46, 0.8); border-color: var(--neon-blue); backdrop-filter: blur(10px);">
+              <div class="spinner-border spinner-border-sm text-light" role="status">
+                <span class="visually-hidden">Searching...</span>
+              </div>
+            </span>
+            <button class="btn btn-outline-light" type="button" onclick="clearNavbarSearch()">
+              <i class="fas fa-times"></i>
+            </button>
+          </div>
         </form>
       </div>
     </div>

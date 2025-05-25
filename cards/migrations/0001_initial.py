@@ -9,27 +9,26 @@ class Migration(migrations.Migration):
 
     initial = True
 
-    dependencies = [
-        migrations.swappable_dependency(settings.AUTH_USER_MODEL),
-    ]
-
     operations = [
         migrations.CreateModel(
-            name='Card',
+            name="Card",
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('name', models.CharField(max_length=100)),
-                ('rarity', models.CharField(choices=[('common', 'Common')], max_length=20)),
-                ('image', models.ImageField(upload_to='cards/')),
-                ('description', models.TextField()),
-            ],
-        ),
-        migrations.CreateModel(
-            name='UserCollection',
-            fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('cards', models.ManyToManyField(blank=True, to='cards.card')),
-                ('user', models.OneToOneField(on_delete=django.db.models.deletion.CASCADE, to=settings.AUTH_USER_MODEL)),
+                (
+                    "id",
+                    models.BigAutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("name", models.CharField(max_length=100)),
+                (
+                    "rarity",
+                    models.CharField(choices=[("common", "Common")], max_length=20),
+                ),
+                ("image", models.ImageField(upload_to="cards/")),
+                ("description", models.TextField()),
             ],
         ),
     ]

@@ -1,7 +1,4 @@
-{% extends 'cards/base.html' %}
-{% block title %}Card Gallery{% endblock %}
-{% block content %}
-<h1>Card Gallery</h1>
+<h1>Search Results</h1>
 <div class="row row-cols-1 row-cols-md-4 g-4" id="card-grid">
   {% for card in cards %}
   <div class="col">
@@ -12,18 +9,11 @@
       </template>
       <template x-if="flipped">
         <div class="card-body">
-          <h5 class="card-title">{{ card.name }}</h5>
-          <p class="card-text">{{ card.description }}</p>
-          <span class="badge bg-info text-dark">{{ card.rarity|title }}</span>
+            <h5 class="card-title">{{ card.name }}</h5>
+            <p class="card-text">{{ card.description }}</p>
+            <p class="card-text">{{ card.rarity }}</p>
         </div>
-      </template>
     </div>
-  </div>
-  {% endfor %}
 </div>
-
-
+{% endfor %}
 </div>
-
-<div id="new-cards" class="row mt-4"></div>
-{% endblock %}
