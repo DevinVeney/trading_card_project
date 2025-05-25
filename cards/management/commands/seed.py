@@ -1,11 +1,25 @@
 from django.core.management.base import BaseCommand
+from django.contrib.auth.models import User
 from cards.models import Card
 
 class Command(BaseCommand):
     def handle(self, *args, **options):
         self.stdout.write('seeding data...')
+        create_admin_user(self)
         run_seed(self)
         self.stdout.write('done.')
+
+def create_admin_user(self):
+    """Create admin user if it doesn't exist"""
+    if not User.objects.filter(username='admin').exists():
+        admin_user = User.objects.create_superuser(
+            username='admin',
+            email='admin@example.com',
+            password='admin123'
+        )
+        self.stdout.write(self.style.SUCCESS('Admin user created: admin/admin123'))
+    else:
+        self.stdout.write('Admin user already exists')
 
 def run_seed(self):  
        card_list = [
