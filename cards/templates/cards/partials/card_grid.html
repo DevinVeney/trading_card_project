@@ -1,0 +1,69 @@
+{% load static %}
+{% for card in cards %}
+<div class="vault-card-container" data-aos="fade-up" data-aos-delay="{{ forloop.counter0|add:100 }}">
+  <div x-data="{ flipped: false }" 
+       class="vault-card" 
+       data-rarity="{{ card.rarity }}"
+       tabindex="0"
+       @keydown.enter="flipped = !flipped"
+       @keydown.space="flipped = !flipped">
+    
+    <!-- Card Front -->
+    <div x-show="!flipped" 
+         x-transition:enter="transition ease-out duration-300"
+         x-transition:enter-start="opacity-0 transform scale-90"
+         x-transition:enter-end="opacity-100 transform scale-100"
+         class="card-front">
+      <div @click="flipped = !flipped" style="height: 100%; display: flex; flex-direction: column;">
+        <div style="position: relative; flex-grow: 1;">
+          <img src="{% static 'cards/images/' %}{{ card.image }}" 
+               class="card-img-top" 
+               alt="{{ card.name }}"
+               loading="lazy">
+          <div class="rarity-indicator">
+            <span class="badge bg-info">{{ card.rarity|title }}</span>
+          </div>
+        </div>
+        <div class="card-body">
+          <h5 class="card-title">{{ card.name }}</h5>
+        </div>
+      </div>
+    </div>
+    
+    <!-- Card Back -->
+    <div x-show="flipped"
+         x-transition:enter="transition ease-out duration-300"
+         x-transition:enter-start="opacity-0 transform scale-90"
+         x-transition:enter-end="opacity-100 transform scale-100"
+         style="height: 100%; display: flex; flex-direction: column;">
+      <div class="card-body" style="height: 100%; display: flex; flex-direction: column;">
+        <h5 class="card-title">
+          <i class="fas fa-star me-2"></i>{{ card.name }}
+        </h5>
+        <p class="card-text">{{ card.description }}</p>
+        <span class="badge bg-info">{{ card.rarity|title }}</span>
+        
+        <!-- Enhanced Action Buttons -->
+        <div class="mt-auto d-flex gap-2">
+          <a href="{% url 'card_detail' card.id %}" 
+             class="btn btn-primary btn-sm flex-fill">
+            <i class="fas fa-search-plus me-1"></i> Analyze
+          </a>
+          <button @click="flipped = false" 
+                  class="btn btn-secondary btn-sm">
+            <i class="fas fa-undo me-1"></i> Flip
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% empty %}
+<div class="vault-card-container" data-aos="fade-in">
+  <div class="no-results">
+    <i class="fas fa-search fa-3x mb-3" style="color: var(--neon-blue);"></i>
+    <h4>No cards found in the vault</h4>
+    <p>Try adjusting your search terms or explore the complete collection.</p>
+  </div>
+</div>
+{% endfor %} 
